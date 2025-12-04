@@ -1,3 +1,18 @@
+# Avant de commencer a travailler
+
+- clonez le repertoire avec `git clone https://github.com/innerviewer/ctrl-alt-win.git`
+- dans le repertoire, créez une branche a partir de `dev` (qui est la branche par défaut) avec `git checkout -b contrib/VOTRE_NOM`
+
+# Apres avoir fait des modifications
+
+- faites le commit **EN CHOISISSANT** les fichier qui vous voulez partager
+- faites le `git push` (la premiere fois après creation de la branche, utilisez `git push --set-upstream origin contrib/VOTRE_NOM`)
+- quand vous aurez finis, faites un PR dev<-contrib/VOTRE_NOM
+
+> [!IMPORTANT]
+> Le nom de commit doit correspondre a: `(PARTIE DU PROJET QUE VOUS AVEZ MODIFIE) Ce que vous avez fait.`
+> par exemple: `(Footer) Added new CSS styles for the footer.`
+
 # Astro Starter Kit: Basics
 
 ```sh
