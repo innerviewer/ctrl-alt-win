@@ -1,0 +1,291 @@
+---
+/**
+ * Props:
+ *  - current: string | undefined
+ *    ex: "accueil" | "nird" | "capgemini" | "femmes" | "ergonomie"
+ */
+const { current } = Astro.props ?? {};
+
+const links = [
+  { id: "accueil", href: "/index.html", label: "Accueil" },
+  { id: "nird", href: "/nird.html", label: "NIRD" },
+  { id: "capgemini", href: "/capgemini.html", label: "Capgemini" },
+  { id: "femmes", href: "/femmes-informatique.html", label: "Femmes & Info" },
+  { id: "ergonomie", href: "/ergonomie.html", label: "Ergonomie" },
+];
+---
+
+<div class="header-glow"></div>
+
+<header>
+  <div class="header-wrapper">
+    {/* Logo / Brand */}
+    <a href="/index.html" class="brand">
+      <div class="brand-logo">
+        <span>N</span>
+      </div>
+      <span class="brand-name">NIRD</span>
+    </a>
+
+    {/* Navigation centrée */}
+    <nav aria-label="Navigation principale" class="main-nav">
+      <ul class="nav-links">
+        {links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class:list={{ active: current === link.id }}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    {/* Espace vide pour équilibrer le centrage */}
+    <div class="header-spacer"></div>
+
+    {/* Burger pour mobile (optionnel, si tu ajoutes du JS plus tard) */}
+    <button class="burger" aria-label="Ouvrir le menu">
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<style>
+  /* --------- RESET LOCAL (léger) --------- */
+  :global(body) {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+
+  color: #f9fafb;
+}
+
+
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  
+
+  .header-wrapper {
+    max-width: 1200px;
+    margin: 0.75rem auto;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 999px;
+    box-shadow:
+      0 0 14px rgba(59, 130, 246, 0.6),
+      0 0 40px rgba(236, 72, 153, 0.4);
+    position: relative;
+    z-index: 10;
+  }
+
+  /* --------- BRAND --------- */
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: auto;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .brand-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .brand-logo::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+      from 180deg,
+      rgba(59, 130, 246, 0.9),
+      rgba(236, 72, 153, 0.9),
+      rgba(56, 189, 248, 0.9),
+      rgba(59, 130, 246, 0.9)
+    );
+    animation: rotate 6s linear infinite;
+    opacity: 0.6;
+  }
+
+  .brand-logo span {
+    position: relative;
+    z-index: 1;
+    color: #ffffff;
+  }
+
+  @keyframes rotate {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* --------- NAVIGATION --------- */
+
+  .main-nav {
+    position: relative;
+    z-index: 10;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0.4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-links li a {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 0.55rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    background: radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.18),
+      transparent 55%
+    );
+    position: relative;
+    overflow: visible;
+    transform: translateY(0) scale(1);
+    text-decoration: none;
+    color: inherit;
+
+    transition:
+      transform 0.18s ease-out,
+      box-shadow 0.18s ease-out,
+      border-color 0.18s ease-out,
+      background 0.18s ease-out;
+  }
+
+  /* Rectangle néon derrière le bouton */
+  .nav-links li a::after {
+    content: "";
+    position: absolute;
+    inset: -4px -10px;
+    border-radius: 14px;
+    background: radial-gradient(
+      circle at 50% 0,
+      rgba(56, 189, 248, 0.7),
+      rgba(236, 72, 153, 0.4),
+      transparent 70%
+    );
+    opacity: 0;
+    z-index: -1;
+    filter: blur(1px);
+    transition:
+      opacity 0.18s ease-out,
+      transform 0.18s ease-out;
+  }
+
+  .nav-links li a:hover {
+    transform: translateY(-1px) scale(1.06);
+    box-shadow:
+      0 0 12px rgba(56, 189, 248, 0.7),
+      0 0 24px rgba(236, 72, 153, 0.7);
+    border-color: rgba(248, 250, 252, 0.8);
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  .nav-links li a:hover::after {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+
+  /* Lien actif (page courante) */
+  .nav-links li a.active::after {
+    opacity: 1;
+  }
+
+  /* --------- SPACER + BURGER --------- */
+
+  .header-spacer {
+    width: 100px;
+    margin-left: auto;
+  }
+
+  .burger {
+    display: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+    background: rgba(15, 23, 42, 0.9);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .burger span {
+    width: 15px;
+    height: 1.7px;
+    background: #e5e7eb;
+    position: relative;
+  }
+
+  .burger span::before,
+  .burger span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 15px;
+    height: 1.7px;
+    background: #e5e7eb;
+  }
+
+  .burger span::before {
+    top: -4px;
+  }
+
+  .burger span::after {
+    top: 4px;
+  }
+
+  @media (max-width: 800px) {
+    .header-wrapper {
+      border-radius: 1rem;
+    }
+
+    .main-nav {
+      display: none; /* tu pourras le gérer avec du JS/Islands plus tard */
+    }
+
+    .header-spacer {
+      width: 0;
+    }
+
+    .burger {
+      display: flex;
+    }
+  }
+</style>
