@@ -59,5 +59,23 @@ btnDefaite.addEventListener('click', () => {
   genererGrille();
 });
 
+const btn = document.getElementById('btnEnvoyer');
+
+// Petite regex simple pour valider un e-mail standard
+function estEmail(val) {
+  return /^[^\s@]+@[^\s@]+.[^\s@]+$/.test(val);
+}
+
+btn.addEventListener('click', () => {
+  const contenu = texteDiv.textContent;
+
+  if (estEmail(contenu)) {
+    alert("E-mail valide !");
+    texteDiv.textContent = ""; // vide la div
+  } else {
+    alert("Erreur : ce n'est pas un e-mail valide.");
+  }
+});
+
 // Générer la grille au démarrage
 genererGrille();
