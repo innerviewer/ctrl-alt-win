@@ -1,0 +1,213 @@
+---
+const questions = [
+  {
+    question: "Que signifie l’acronyme NIRD ?",
+  options: ["Numérique Inclusif, Responsable et Durable", "Nouveau Internet Révolutionnaire Durable", "Numérique Intégré, Réutilisable et Distribué"],
+  answer: "Numérique Inclusif, Responsable et Durable"
+  },
+  {
+    question: "Quel est un avantage du logiciel libre ?",
+    options: [
+      "On peut l'étudier et le modifier",
+      "Il appartient à une seule entreprise",
+      "Il consomme toujours plus de ressources"
+    ],
+    answer: "On peut l'étudier et le modifier"
+  },
+  {
+    question: "Quel est un des objectifs de NIRD concernant le matériel informatique ?",
+  options: [
+    "Acheter du matériel neuf chaque année",
+    "Reconditionner du matériel et prolonger la durée de vie des ordinateurs",
+    "Utiliser uniquement des tablettes propriétaires"
+  ],
+  answer: "Reconditionner du matériel et prolonger la durée de vie des ordinateurs"
+  },
+  {
+    question: "Quel système d’exploitation est souvent utilisé dans le cadre de NIRD pour favoriser le libre ?",
+    options: [
+      "Windows 10",
+      "GNU/Linux ou distributions libres",
+      "macOS"
+    ],
+    answer: "GNU/Linux ou distributions libres"
+  },
+  {
+  question: "Quel est l’objectif principal de NIRD lorsqu’il encourage le reconditionnement du matériel informatique dans les établissements scolaires ?",
+  options: [
+    "Augmenter les dépenses informatiques des établissements",
+    "Forcer les élèves à utiliser uniquement certains logiciels",
+    "Réduire l’empreinte écologique tout en facilitant l’accès au numérique"
+  ],
+  answer: "Réduire l’empreinte écologique tout en facilitant l’accès au numérique"
+}
+];
+---
+
+<section class="quiz">
+  <h2>Quiz : Connais-tu la démarche NIRD&nbsp;?</h2>
+
+  <div
+    id="quiz-container"
+    data-questions={JSON.stringify(questions)}
+  >
+    <p id="question"></p>
+    <div id="options"></div>
+    <p id="feedback"></p>
+    <button id="next" style="display:none;">Question suivante</button>
+  </div>
+</section>
+
+<script type="module">
+  const container = document.getElementById("quiz-container");
+  const questions = JSON.parse(container.dataset.questions);
+
+  let index = 0;
+  let score = 0; // nouvelle variable pour compter les bonnes réponses
+
+  const qText = document.getElementById("question");
+  const optionsBox = document.getElementById("options");
+  const feedback = document.getElementById("feedback");
+  const nextBtn = document.getElementById("next");
+
+  function loadQuestion() {
+    const q = questions[index];
+    qText.textContent = q.question;
+    optionsBox.innerHTML = "";
+    
+    feedback.textContent = "";
+    feedback.classList.remove("good", "bad");
+    
+    nextBtn.style.display = "none";
+
+    q.options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.textContent = opt;
+      btn.className = "opt";
+      btn.onclick = () => checkAnswer(opt);
+      optionsBox.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(selected) {
+    const correct = questions[index].answer;
+
+    feedback.classList.remove("good", "bad");
+
+    if (selected === correct) {
+      feedback.textContent = "Bonne réponse !";
+      feedback.classList.add("good");
+      score++; // on incrémente le score si bonne réponse
+    } else {
+      feedback.textContent = "Mauvaise réponse.";
+      feedback.classList.add("bad");
+    }
+
+    nextBtn.style.display = "inline-block";
+  }
+
+  nextBtn.onclick = () => {
+    index++;
+    if (index >= questions.length) {
+      qText.textContent = "Bravo ! Tu as fini le quiz !";
+      optionsBox.innerHTML = "";
+      feedback.textContent = `Ton score : ${score} / ${questions.length}`; // affiche le score
+      feedback.classList.remove("good", "bad");
+      nextBtn.style.display = "none";
+    } else {
+      loadQuestion();
+    }
+  };
+
+  loadQuestion();
+</script>
+<style>
+.quiz {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(12px);
+
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  user-select: none;
+}
+
+#options {
+  display: flex;
+  flex-direction: column; /* options empilées verticalement */
+  gap: 1rem; /* espacement entre boutons */
+  margin: 0 0.5rem;
+}
+
+#feedback {
+  padding: 0.8rem 1rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Bonne réponse = fond vert clair */
+#feedback.good {
+  background-color: #c8f5c3;
+  color: #1b5e20;
+}
+
+/* Mauvaise réponse = fond rouge clair */
+#feedback.bad {
+  background-color: #ffcccc;
+  color: #b71c1c;
+}
+
+.opt {
+  padding: 0.7rem 1rem;
+  border: 1px solid #2e7d32;
+  background: white;
+  color: #2e7d32;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.opt:hover {
+  background: #2e7d32;
+  color: white;
+}
+
+#next {
+  margin-top: 1.3rem;
+  padding: 0.6rem 1.2rem;
+  background: #ec4d0e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.quiz h2 {
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #eebebe;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 1px;
+}
+
+#question {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: white;
+}
+`
+
+
+
+<style>
