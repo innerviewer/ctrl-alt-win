@@ -77,5 +77,14 @@ btn.addEventListener('click', () => {
   }
 });
 
+// Empêche Ctrl+F et Cmd+F
+document.addEventListener("keydown", function (e) {
+  const isCtrlF = (e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f";
+  if (isCtrlF) {
+    e.preventDefault();
+    alert("Recherche interdite 😈");
+  }
+});
+
 // Générer la grille au démarrage
 genererGrille();
