@@ -1,7 +1,5 @@
 import * as THREE from "three";
 
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
 
@@ -15,10 +13,6 @@ function main() {
   const far = 100;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   camera.position.set(0, 10, 20);
-
-  const controls = new OrbitControls(camera, canvas);
-  controls.target.set(0, 5, 0);
-  controls.update();
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("white");
@@ -70,12 +64,12 @@ function main() {
 
   {
     const mtlLoader = new MTLLoader();
-    mtlLoader.load("models/real-penger/real-penger.mtl", (mtl) => {
+    mtlLoader.load("models/penger/penger.mtl", (mtl) => {
       mtl.preload();
       const objLoader = new OBJLoader();
       objLoader.setMaterials(mtl);
-      objLoader.load("models/real-penger/real-penger.obj", (root) => {
-        // scene.add(root);
+      objLoader.load("models/penger/penger.obj", (root) => {
+        scene.add(root);
         loadedModel = root;
 
         // compute the box that contains all the stuff
@@ -87,11 +81,6 @@ function main() {
 
         // set the camera to frame the box
         frameArea(boxSize * 1.2, boxSize, boxCenter, camera);
-
-        // update the Trackball controls to handle the new size
-        controls.maxDistance = boxSize * 10;
-        controls.target.copy(boxCenter);
-        controls.update();
       });
     });
   }
@@ -116,7 +105,7 @@ function main() {
     }
 
     if (loadedModel) {
-      // loadedModel.rotation.y += 0.15;
+      loadedModel.rotation.y += 0.15;
     }
 
     renderer.render(scene, camera);

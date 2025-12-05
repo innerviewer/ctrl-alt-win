@@ -22,9 +22,7 @@ const questions = [
     "Utiliser uniquement des tablettes propriétaires"
   ],
   answer: "Reconditionner du matériel et prolonger la durée de vie des ordinateurs"
-  },
-  {
-    question: "Quel système d’exploitation est souvent utilisé dans le cadre de NIRD pour favoriser le libre ?",
+  }, { question: "Quel système d’exploitation est souvent utilisé dans le cadre de NIRD pour favoriser le libre ?",
     options: [
       "Windows 10",
       "GNU/Linux ou distributions libres",
@@ -47,6 +45,9 @@ const questions = [
 <section class="quiz">
   <h2>Quiz : Connais-tu la démarche NIRD&nbsp;?</h2>
 
+    <canvas id="c"></canvas>
+    <script src="../assets/mainthree.js"></script>
+
   <div
     id="quiz-container"
     data-questions={JSON.stringify(questions)}
@@ -60,6 +61,16 @@ const questions = [
 </section>
 
 <style>
+#c {
+ position: fixed;
+ left: 0;
+ top: 0;
+ z-index: -1;
+ width: 100%;
+ height: 100%;
+ display: none;
+}
+
 .quiz {
   max-width: 600px;
   margin: 2rem auto;
