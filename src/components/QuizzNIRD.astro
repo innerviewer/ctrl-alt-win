@@ -41,7 +41,6 @@ const questions = [
 }
 ];
 ---
-
 <section class="quiz">
   <h2>Quiz : Connais-tu la démarche NIRD&nbsp;?</h2>
 
@@ -61,98 +60,165 @@ const questions = [
 </section>
 
 <style>
+/* --- Configuration de base --- */
 #c {
- position: fixed;
- left: 0;
- top: 0;
- z-index: -1;
- width: 100%;
- height: 100%;
- display: none;
+  display: flex;
+  justify-self: center;
+  align-self: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+
+  overflow: hidden;
+  /* display: none; Ou block si tu veux le fond Three.js */
 }
 
+/* --- Conteneur du Quiz --- */
 .quiz {
-  max-width: 600px;
+  max-width: 700px;
   margin: 2rem auto;
-  padding: 1.5rem 2rem;
+  padding: 1.8rem;
 
+  /* Style Glassmorphism Global */
   background: rgba(20, 20, 20, 0.6);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
-  border-radius: 15px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.7);
-  color: #eee;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+
+  color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   user-select: none;
 }
 
+/* --- Titre --- */
+.quiz h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 0;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+/* --- Question --- */
+#question {
+  font-size: 1.2rem;
+  font-weight: 500;
+  /* margin-bottom: 1rem; */
+  color: #fff;
+  line-height: 1.2;
+  min-height: 1.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Liste des options --- */
 #options {
   display: flex;
-  flex-direction: column; /* options empilées verticalement */
-  gap: 1rem; /* espacement entre boutons */
-  margin: 0 0.5rem;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  /* background: red; */
 }
 
-#feedback {
-  padding: 0.8rem 1rem;
-  margin-top: 1rem;
-  border-radius: 8px;
-  font-weight: bold;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Bonne réponse = fond vert clair */
-#feedback.good {
-  background-color: #c8f5c3;
-  color: #1b5e20;
-}
-
-/* Mauvaise réponse = fond rouge clair */
-#feedback.bad {
-  background-color: #ffcccc;
-  color: #b71c1c;
-}
-
+/* --- Boutons de réponse (.opt) --- */
 .opt {
-  padding: 0.7rem 1rem;
-  border: 1px solid #2e7d32;
-  background: white;
-  color: #2e7d32;
-  border-radius: 6px;
+  padding: 15px 20px;
+  font-size: 1rem;
+  text-align: left; /* Plus lisible pour les longues phrases */
   cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 30px;
+
+  /* Style Verre Sombre */
+  background: rgba(255, 255, 255, 0.05);
+  background-color: blue;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: rgba(255, 0, 0, 0.8);
+  position: relative;
+  overflow: hidden;
 }
 
 .opt:hover {
-  background: #2e7d32;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(5px); /* Petit mouvement vers la droite */
   color: white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-#next {
-  margin-top: 1.3rem;
-  padding: 0.6rem 1.2rem;
-  background: #ec4d0e;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+/* Gestion du focus/active */
+.opt:active {
+  transform: scale(0.98);
 }
 
-.quiz h2 {
-  font-size: 2rem;
-  font-weight: 900;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #eebebe;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-  font-family: 'Arial', sans-serif;
-  letter-spacing: 1px;
-}
-
-#question {
-  font-size: 1.5rem;
+/* --- Zone de Feedback (Réponse juste/fausse) --- */
+#feedback {
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 12px;
   font-weight: bold;
-  margin-bottom: 1rem;
-  color: white;
+  font-size: 1.1rem;
+  min-height: 20px;
+  opacity: 0; /* Caché par défaut */
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
 }
-<style>
+
+/* Quand le feedback a du contenu */
+#feedback:not(:empty) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Bonne réponse : Vert vitré */
+#feedback.good {
+  background-color: rgba(46, 204, 113, 0.2);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  color: #2ecc71;
+  box-shadow: 0 0 15px rgba(46, 204, 113, 0.1);
+}
+
+/* Mauvaise réponse : Rouge vitré */
+#feedback.bad {
+  background-color: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.4);
+  color: #ff6b6b;
+  box-shadow: 0 0 15px rgba(231, 76, 60, 0.1);
+}
+
+/* --- Bouton Suivant --- */
+#next {
+  /* margin-top: 1rem; */
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 50px; /* Pill shape */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.3s;
+
+  /* Fond neutre vitré qui s'allume au survol */
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  backdrop-filter: blur(4px);
+}
+
+#next:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+</style>

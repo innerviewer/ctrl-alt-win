@@ -15,7 +15,7 @@ function main() {
   camera.position.set(0, 10, 20);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color("white");
+  scene.background =  new THREE.Color().setRGB( 0, 0, 0);
 
   {
     const skyColor = 0xb1e1ff; // light blue
