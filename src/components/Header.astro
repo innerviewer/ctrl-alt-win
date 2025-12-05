@@ -1,9 +1,4 @@
 ---
-/**
- * Props:
- *  - current: string | undefined
- *    ex: "accueil" | "nird" | "capgemini" | "femmes" | "ergonomie"
- */
 const { current } = Astro.props ?? {};
 
 const links = [
@@ -15,277 +10,146 @@ const links = [
 ];
 ---
 
-<div class="header-glow"></div>
-
-<header>
-  <div class="header-wrapper">
-    {/* Logo / Brand */}
+<header class="header">
+  <div class="header-panel">
     <a href="/index.html" class="brand">
-      <div class="brand-logo">
-        <span>N</span>
-      </div>
-      <span class="brand-name">NIRD</span>
+      <div class="brand-logo">CAW</div>
+      <span class="brand-title">CTRL+ALT+WIN</span>
     </a>
 
-    {/* Navigation centrée */}
-    <nav aria-label="Navigation principale" class="main-nav">
-      <ul class="nav-links">
-        {links.map((link) => (
-          <li>
-            <a
-              href={link.href}
-              class:list={{ active: current === link.id }}
-            >
-              {link.label}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <nav class="nav" aria-label="Navigation principale">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class={current === link.id ? "nav-link is-active" : "nav-link"}
+        >
+          {link.label}
+        </a>
+      ))}
     </nav>
-
-    {/* Espace vide pour équilibrer le centrage */}
-    <div class="header-spacer"></div>
-
-    {/* Burger pour mobile (optionnel, si tu ajoutes du JS plus tard) */}
-    <button class="burger" aria-label="Ouvrir le menu">
-      <span></span>
-    </button>
   </div>
 </header>
 
 <style>
-  /* --------- RESET LOCAL (léger) --------- */
-  :global(body) {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-
-  color: #f9fafb;
-}
-
-
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
+  /* Reset de base pour virer le bleu et les soulignements */
+  :global(a) {
+    color: inherit;
+    text-decoration: none;
   }
 
-  
+  .header {
+    position: absolute;
+    top: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    z-index: 20;
+    font-family: sans-serif;
+    color: white;
+  }
 
-  .header-wrapper {
-    max-width: 1200px;
-    margin: 0.75rem auto;
-    padding: 0.75rem 1rem;
+  .header-panel {
+    background: rgba(0, 0, 0, 0.7);       /* noir sobre */
+    backdrop-filter: blur(20px);          /* blur fort */
+    -webkit-backdrop-filter: blur(20px);
+    padding: 14px 22px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
-
-    background: rgba(15, 23, 42, 0.7);
-    border: 1px solid rgba(148, 163, 184, 0.4);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border-radius: 999px;
-    box-shadow:
-      0 0 14px rgba(59, 130, 246, 0.6),
-      0 0 40px rgba(236, 72, 153, 0.4);
-    position: relative;
-    z-index: 10;
+    gap: 18px;
   }
 
-  /* --------- BRAND --------- */
+  /* Brand */
 
   .brand {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    font-weight: 700;
-    margin-right: auto;
-    text-decoration: none;
-    color: inherit;
+    gap: 12px;
+    white-space: nowrap;
   }
 
   .brand-logo {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    border: 1px solid rgba(148, 163, 184, 0.7);
+    padding: 8px 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 1);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .brand-title {
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #d4d4d4;
+  }
+
+  /* Nav = rangée de boutons */
+
+  .nav {
+    margin-left: auto;
     display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .nav-link {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
-    position: relative;
-    overflow: hidden;
-  }
 
-  .brand-logo::before {
-    content: "";
-    position: absolute;
-    inset: -50%;
-    background: conic-gradient(
-      from 180deg,
-      rgba(59, 130, 246, 0.9),
-      rgba(236, 72, 153, 0.9),
-      rgba(56, 189, 248, 0.9),
-      rgba(59, 130, 246, 0.9)
-    );
-    animation: rotate 6s linear infinite;
-    opacity: 0.6;
-  }
-
-  .brand-logo span {
-    position: relative;
-    z-index: 1;
-    color: #ffffff;
-  }
-
-  @keyframes rotate {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  /* --------- NAVIGATION --------- */
-
-  .main-nav {
-    position: relative;
-    z-index: 10;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 0.4rem;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .nav-links li a {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 0.55rem 0.9rem;
+    padding: 7px 14px;
     border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.4);
-    background: radial-gradient(
-      circle at top left,
-      rgba(59, 130, 246, 0.18),
-      transparent 55%
-    );
-    position: relative;
-    overflow: visible;
-    transform: translateY(0) scale(1);
-    text-decoration: none;
-    color: inherit;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 1);
+
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
 
     transition:
       transform 0.18s ease-out,
-      box-shadow 0.18s ease-out,
-      border-color 0.18s ease-out,
-      background 0.18s ease-out;
+      background 0.18s ease-out,
+      box-shadow 0.18s ease-out;
   }
 
-  /* Rectangle néon derrière le bouton */
-  .nav-links li a::after {
-    content: "";
-    position: absolute;
-    inset: -4px -10px;
-    border-radius: 14px;
-    background: radial-gradient(
-      circle at 50% 0,
-      rgba(56, 189, 248, 0.7),
-      rgba(236, 72, 153, 0.4),
-      transparent 70%
-    );
-    opacity: 0;
-    z-index: -1;
-    filter: blur(1px);
-    transition:
-      opacity 0.18s ease-out,
-      transform 0.18s ease-out;
+  /* Hover : grossit + gris plus clair */
+  .nav-link:hover {
+    transform: scale(1.05);
+    background: rgba(200, 200, 200, 0.25);  /* gris clair */
   }
 
-  .nav-links li a:hover {
-    transform: translateY(-1px) scale(1.06);
-    box-shadow:
-      0 0 12px rgba(56, 189, 248, 0.7),
-      0 0 24px rgba(236, 72, 153, 0.7);
-    border-color: rgba(248, 250, 252, 0.8);
-    background: rgba(15, 23, 42, 0.9);
+  .nav-link:active {
+    transform: scale(0.97);
   }
 
-  .nav-links li a:hover::after {
-    opacity: 1;
-    transform: scale(1.03);
+  .nav-link.is-active {
+    background: rgba(220, 220, 220, 0.35);
   }
 
-  /* Lien actif (page courante) */
-  .nav-links li a.active::after {
-    opacity: 1;
-  }
+  /* Responsive */
 
-  /* --------- SPACER + BURGER --------- */
-
-  .header-spacer {
-    width: 100px;
-    margin-left: auto;
-  }
-
-  .burger {
-    display: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.6);
-    background: rgba(15, 23, 42, 0.9);
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  .burger span {
-    width: 15px;
-    height: 1.7px;
-    background: #e5e7eb;
-    position: relative;
-  }
-
-  .burger span::before,
-  .burger span::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    width: 15px;
-    height: 1.7px;
-    background: #e5e7eb;
-  }
-
-  .burger span::before {
-    top: -4px;
-  }
-
-  .burger span::after {
-    top: 4px;
-  }
-
-  @media (max-width: 800px) {
-    .header-wrapper {
-      border-radius: 1rem;
+  @media (max-width: 640px) {
+    .header-panel {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
     }
 
-    .main-nav {
-      display: none; /* tu pourras le gérer avec du JS/Islands plus tard */
+    .brand {
+      justify-content: center;
     }
 
-    .header-spacer {
-      width: 0;
-    }
-
-    .burger {
-      display: flex;
+    .nav {
+      justify-content: center;
     }
   }
 </style>
+
+
+
