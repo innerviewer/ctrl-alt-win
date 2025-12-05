@@ -1,0 +1,437 @@
+---
+// Composant Astro pour l'assistant DibiChat
+---
+
+<style is:global>
+  /* --- Global Font & Animations --- */
+  :root {
+    --glass-bg: rgba(20, 20, 20, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-hover: rgba(255, 255, 255, 0.25);
+    --glass-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  }
+
+  /* Animation des points de chargement (Blanc maintenant) */
+  .typing-dot {
+    animation: typing 1.4s infinite ease-in-out both;
+    background-color: white; /* Changé de violet à blanc */
+  }
+
+  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+  @keyframes typing {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+  }
+
+  /* --- Widget Wrapper --- */
+  .assistant-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    font-family: sans-serif; /* Harmonisé avec le 2ème CSS */
+    color: white;
+  }
+
+  /* --- Bouton Principal (Rond) --- */
+  .assistant-button {
+    width: 60px; /* Ajusté pour être plus élégant */
+    height: 60px;
+    border-radius: 50%;
+
+    /* Style du 2ème CSS */
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    color: white;
+
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 24px;
+  }
+
+  .assistant-button:hover {
+    background: var(--glass-hover);
+    transform: scale(1.05);
+  }
+
+  /* --- Fenêtre de Chat --- */
+  .assistant-chat {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 380px;
+    height: 550px;
+
+    /* Style du 2ème CSS appliqué au container */
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--glass-shadow);
+
+    display: none;
+    flex-direction: column;
+    overflow: hidden; /* Important pour les coins arrondis */
+    animation: slideUp 0.3s ease;
+  }
+
+  .assistant-chat.active {
+    display: flex;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- Header --- */
+  .assistant-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .header-icon {
+    font-size: 24px;
+  }
+
+  .header-info {
+    flex: 1;
+  }
+  .header-title {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  .header-status {
+    font-size: 0.75rem;
+    color: #aaa;
+  }
+
+  .close-btn {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+  }
+  .close-btn:hover {
+    color: white;
+    transform: scale(1.1);
+  }
+
+  /* --- Zone Messages --- */
+  .assistant-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Suppression du background image/gradient pour garder la transparence */
+  }
+
+  .message {
+    display: flex;
+    gap: 8px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .message.user {
+    justify-content: flex-end;
+  }
+
+  .message-bubble {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+  }
+
+  /* Bulles User : Style "Active" du 2ème CSS */
+  .message.user .message-bubble {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    border-bottom-right-radius: 2px;
+  }
+
+  /* Bulles Bot : Style "Passif" sombre */
+  .message.bot .message-bubble {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    color: #ddd;
+    border-bottom-left-radius: 2px;
+  }
+
+  /* --- Input Area --- */
+  .assistant-input-form {
+    display: flex;
+    gap: 10px;
+    padding: 15px;
+    border-top: 1px solid var(--glass-border);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .assistant-input-form input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px; /* Plus rond comme le style visuel */
+    padding: 10px 15px;
+    color: white;
+    font-size: 0.9rem;
+    font-family: sans-serif;
+    outline: none;
+    transition: 0.2s;
+  }
+
+  .assistant-input-form input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .assistant-input-form input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .assistant-input-form button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+  }
+
+  .assistant-input-form button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+  }
+
+  .assistant-input-form button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* Scrollbar masquée mais fonctionnelle */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .hidden { display: none; }
+</style>
+
+<!-- ASSISTANT WIDGET -->
+<div class="assistant-widget">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Bouton d'ouverture -->
+  <button id="assistant-button" class="assistant-button" title="Ouvrir l'assistant">
+    <i class="fa-solid fa-cat"></i>
+  </button>
+
+  <!-- Fenêtre de chat -->
+  <div id="assistant-chat" class="assistant-chat">
+    <!-- En-tête -->
+    <div class="assistant-header">
+    <i class="fa-solid fa-cat" style="font-size: 60px;"></i>
+      <div class="flex-1">
+        <div class="font-semibold text-sm text-white">DibiChat</div>
+        <div class="text-xs text-gray-400">En ligne</div>
+      </div>
+      <button id="close-assistant" >
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div id="assistant-messages" class="assistant-messages scrollbar-hide"></div>
+
+    <!-- Indicateur de chargement -->
+    <div id="assistant-loading" class="hidden px-4 py-2">
+      <div class="flex gap-1.5 w-fit">
+        <div class="w-2 h-2 bg-purple-500 rounded-full typing-dot"></div>
+        <div class="w-2 h-2 bg-purple-500 rounded-full typing-dot"></div>
+        <div class="w-2 h-2 bg-purple-500 rounded-full typing-dot"></div>
+      </div>
+    </div>
+
+    <!-- Formulaire d'entrée -->
+    <form id="assistant-form" class="assistant-input-form">
+      <input
+        id="assistant-input"
+        type="text"
+        placeholder="Votre question..."
+        autocomplete="off"
+      />
+      <button type="submit" id="assistant-send" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  import { GoogleGenAI } from "https://aistudiocdn.com/@google/genai@^1.31.0";
+
+  // Configuration API
+  let API_KEY = 'AIzaSyAdW7DgZMIADd3BpCMojasCiKsAE_WtGyY';
+
+  const SYSTEM_INSTRUCTION = `Tu es un chatbot qui répond systématiquement mal aux questions.
+
+Règles :
+Tu donnes en priorité des mauvaises réponses, des réponses fausses, illogiques ou hors‑sujet.
+Tu évites de corriger tes erreurs, même si la réponse correcte est évidente.
+Tu peux inventer des "faits" totalement faux, mais qui ont l'air sérieux.
+Tu restes toujours poli, non violent, sans contenu haineux, choquant ou illégal.
+Si la question touche à des sujets sensibles (danger, santé, illégal, etc.), tu ne donnes pas de mauvaise info : tu refuses poliment de répondre et tu restes prudent.
+Tes réponses sont courtes (3–5 phrases) et souvent un peu absurdes ou philosophiques pour rester amusantes.`;
+
+  // État de l'assistant - Historique des messages
+  let messageHistory = [
+    {
+      id: 'welcome',
+      role: 'model',
+      text: "Bonjour! Je suis DibiChat. Pose-moi une question sérieuse et je te promets une réponse 100% incorrecte! 😄"
+    }
+  ];
+
+  // Éléments DOM
+  const assistantButton = document.getElementById('assistant-button');
+  const assistantChat = document.getElementById('assistant-chat');
+  const closeButton = document.getElementById('close-assistant');
+  const assistantForm = document.getElementById('assistant-form');
+  const assistantInput = document.getElementById('assistant-input');
+  const assistantSend = document.getElementById('assistant-send');
+  const messagesContainer = document.getElementById('assistant-messages');
+  const assistantLoading = document.getElementById('assistant-loading');
+
+  // Toggler le chat au clic sur le bouton
+  assistantButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    assistantChat.classList.toggle('active');
+    if (assistantChat.classList.contains('active')) {
+      assistantInput.focus();
+    }
+  });
+
+  // Fermer quand on clique ailleurs
+  document.addEventListener('click', (e) => {
+    if (!assistantChat.contains(e.target) && e.target !== assistantButton && !assistantButton.contains(e.target)) {
+      assistantChat.classList.remove('active');
+    }
+  });
+
+  closeButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    assistantChat.classList.remove('active');
+  });
+
+  // Fonction pour envoyer à Gemini
+  async function sendToGemini(userText, history) {
+    if (!API_KEY) throw new Error("Clé API manquante");
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
+
+    const formattedHistory = history.map((msg) => ({
+      role: msg.role,
+      parts: [{ text: msg.text }],
+    }));
+
+    const chat = ai.chats.create({
+      model: "gemini-2.5-flash",
+      config: {
+        systemInstruction: SYSTEM_INSTRUCTION,
+        temperature: 1.2,
+      },
+      history: formattedHistory,
+    });
+
+    const result = await chat.sendMessage({ message: userText });
+    return result.text;
+  }
+
+  // Fonction pour afficher un message
+  function displayMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${message.role === 'user' ? 'user' : 'bot'}`;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.textContent = message.text;
+
+    messageDiv.appendChild(bubble);
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  // Afficher le message de bienvenue
+  displayMessage(messageHistory[0]);
+
+  // Gestion de l'envoi
+  assistantForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const text = assistantInput.value.trim();
+    if (!text) return;
+
+    // Ajouter le message utilisateur
+    const userMessage = { role: 'user', text };
+    messageHistory.push(userMessage);
+    displayMessage(userMessage);
+
+    assistantInput.value = '';
+    assistantSend.disabled = true;
+    assistantLoading.classList.remove('hidden');
+
+    try {
+      const response = await sendToGemini(text, messageHistory);
+      const botMessage = { role: 'model', text: response };
+      messageHistory.push(botMessage);
+      displayMessage(botMessage);
+    } catch (error) {
+      console.error(error);
+      const errorMessage = { role: 'model', text: 'Oups, erreur! 🤖' };
+      messageHistory.push(errorMessage);
+      displayMessage(errorMessage);
+    } finally {
+      assistantLoading.classList.add('hidden');
+      assistantInput.focus();
+    }
+  });
+
+  // Activer/désactiver le bouton d'envoi
+  assistantInput.addEventListener('input', () => {
+    assistantSend.disabled = assistantInput.value.trim() === '';
+  });
+
+  // Envoyer avec Entrée
+  assistantInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      assistantForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+  });
+</script>

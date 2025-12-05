@@ -3,7 +3,7 @@ const { current } = Astro.props ?? {};
 
 const links = [
   { id: "accueil", href: "/index.html", label: "Accueil" },
-  { id: "nird", href: "/nird.html", label: "NIRD" },
+  { id: "nird", href: "/entroisdimensions.html", label: "En 3 Dimensions" },
   { id: "capgemini", href: "/capgemini.html", label: "Capgemini" },
   { id: "femmes", href: "/femmes-informatique.html", label: "Femmes & Info" },
   { id: "ergonomie", href: "/ergonomie.html", label: "Ergonomie" },
@@ -11,7 +11,7 @@ const links = [
 ---
 
 <header class="header">
-  <div class="header-panel">
+  <!-- <div class="header-panel"> -->
     <a href="/index.html" class="brand">
       <div class="brand-logo">CAW</div>
       <span class="brand-title">CTRL+ALT+WIN</span>
@@ -27,7 +27,7 @@ const links = [
         </a>
       ))}
     </nav>
-  </div>
+  <!-- </div> -->
 </header>
 
 <style>
@@ -38,48 +38,49 @@ const links = [
   }
 
   .header {
-    position: absolute;
-    top: 32px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    display: flex;
+    justify-self: center;
+    margin: 20px;
     width: 90%;
     z-index: 20;
     font-family: sans-serif;
     color: white;
-  }
-
-  .header-panel {
-    background: rgba(0, 0, 0, 0.7);       /* noir sobre */
-    backdrop-filter: blur(20px);          /* blur fort */
-    -webkit-backdrop-filter: blur(20px);
-    padding: 14px 22px;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px 22px;
 
-    display: flex;
-    align-items: center;
-    gap: 18px;
+
+    background: rgba(20, 20, 20, 0.6);
+    backdrop-filter: blur(12px); /* Effet verre */
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   /* Brand */
 
-  .brand {
+.brand {
     display: flex;
     align-items: center;
     gap: 12px;
     white-space: nowrap;
-  }
+}
 
-  .brand-logo {
-    padding: 8px 16px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 1);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
+.brand-logo {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+    opacity: 0.5;
+}
+.brand-logo:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); }
 
   .brand-title {
     font-size: 0.8rem;
@@ -102,12 +103,11 @@ const links = [
     align-items: center;
     justify-content: center;
 
-    padding: 7px 14px;
+    padding: 10px 20px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 0.1);
 
-    font-size: 0.72rem;
+    font-weight: 900;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     cursor: pointer;
@@ -119,10 +119,8 @@ const links = [
   }
 
   /* Hover : grossit + gris plus clair */
-  .nav-link:hover {
-    transform: scale(1.05);
-    background: rgba(200, 200, 200, 0.25);  /* gris clair */
-  }
+.nav-link:hover { background: rgba(255, 255, 255, 0.25); transform: scale(1.05); }
+
 
   .nav-link:active {
     transform: scale(0.97);

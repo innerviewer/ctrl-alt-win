@@ -41,7 +41,7 @@ body, html {
     width: 100%;
     height: 100%;
     background-color: #000;
-    overflow: hidden; /* Important : Cache les scrollbars */
+    overflow: hidden;
     font-family: sans-serif;
     color: white;
 }
@@ -52,8 +52,6 @@ body, html {
     top: 0;
     left: 0;
     z-index: 1;
-    /* On ne met PAS width/height ici pour éviter l'étirement.
-       C'est le JS qui va gérer la taille exacte. */
 }
 
 #ui-layer {
