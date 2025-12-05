@@ -2,16 +2,16 @@
 const { current } = Astro.props ?? {};
 
 const links = [
-  { id: "accueil", href: "/index.html", label: "Accueil" },
-  { id: "capgemini", href: "/capgemini.html", label: "Capgemini" },
-  { id: "ergonomie", href: "/ergonomie.html", label: "Ergonomie" },
-  { id: "mentions", href: "/mentions.html", label: "Mentions Legales" },
+  { id: "accueil", href: "/", label: "Accueil" },
+  { id: "capgemini", href: "/capgemini", label: "Capgemini" },
+  { id: "ergonomie", href: "/ergonomie", label: "Ergonomie" },
+  { id: "mentions", href: "/mentions", label: "Mentions Legales" },
 ];
 ---
 
 <header class="header">
   <!-- <div class="header-panel"> -->
-    <a href="/index.html" class="brand">
+    <a href="/" class="brand">
       <div class="brand-logo">CAW</div>
       <span class="brand-title">CTRL+ALT+WIN</span>
     </a>
