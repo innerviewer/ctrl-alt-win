@@ -3,7 +3,10 @@
     <div id="ui-layer">
 
     <div class="upload-zone">
-        <span id="fileName"><a href="https://github.com/Max-Kawula/penger-obj">Modele du penguin.<a/> Author: Max-Kawula. Licence: Penger Public Licence.</span>
+        <span id="fileName">
+            <span><a href="https://github.com/Max-Kawula/penger-obj" class="lien-model" target="_blank">Modele du penguin.<a/></span>
+            <span>Author: Max-Kawula.</span>
+            <span>Licence: Penger Public Licence.</span>
     </div>
 </div>
 
@@ -12,8 +15,10 @@
     box-sizing: border-box;
 }
 
-#fileName:hover {
-    
+#fileName {
+    display: flex;
+    flex-direction: column;
+    line-height: 20px;
 }
 
 body, html {
@@ -45,6 +50,14 @@ body, html {
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.lien-model {
+    font-style: italic;
+    font-weight: bold;
+}
+.lien-model:hover {
+    text-decoration: underline;
 }
 
 .upload-zone {
